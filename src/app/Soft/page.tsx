@@ -28,7 +28,7 @@ export default function Page() {
 				<p className='text-secondary'>精选软件推荐与评测</p>
 			</div>
 
-			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+			<div className='flex flex-wrap gap-4'>
 				{softwareArticles.map((article) => (
 					<motion.div
 						key={article.slug}
@@ -43,7 +43,7 @@ export default function Page() {
 								ease: "easeInOut"
 							}
 						}}
-						className='card overflow-hidden h-[150px]'
+						className='card overflow-hidden w-[350px] h-[150px]'
 					>
 					<Link href={`/blog/${article.slug}`} className='block h-full flex items-center p-3'>
 							{article.cover && (
