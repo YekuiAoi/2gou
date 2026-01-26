@@ -71,6 +71,9 @@
 	"currentHatIndex": 3,
 	"hatFlipped": false,
 	"enableChristmas": true,
+	"enablePasswordAccess": false,
+	"passwordAccessCategories": [],
+	"passwordAccessPassword": "",
 	"beian": {
 		"text": "",
 		"link": ""

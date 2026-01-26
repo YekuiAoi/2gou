@@ -4,14 +4,37 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useConfigStore } from '@/app/(home)/stores/config-store'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useBlogIndex } from '@/hooks/use-blog-index'
+import { PasswordVerify } from '@/components/password-verify'
 
 export default function Page() {
 	const { siteContent } = useConfigStore()
 	const { items: articles, loading } = useBlogIndex()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [selectedTag, setSelectedTag] = useState<string>('all')
+	const [isVerified, setIsVerified] = useState(false)
+	
+	// 检查是否需要密码验证
+	useEffect(() => {
+		const needPassword = siteContent.enablePasswordAccess && 
+			siteContent.passwordAccessPassword && 
+			(siteContent.passwordAccessCategories || []).includes('Chara')
+		
+		if (needPassword) {
+			// 检查是否已经验证过，并且密码没有更改
+			const verified = localStorage.getItem('password_Chara') === 'verified'
+			const storedHash = localStorage.getItem('password_Chara_hash')
+			const currentHash = siteContent.passwordAccessPassword
+			const passwordMatch = storedHash === currentHash
+			
+			// 只有当验证过且密码匹配时才视为已验证
+			setIsVerified(verified && passwordMatch)
+		} else {
+			// 不需要密码验证
+			setIsVerified(true)
+		}
+	}, [siteContent.enablePasswordAccess, siteContent.passwordAccessCategories, siteContent.passwordAccessPassword])
 	
 	// 筛选出分类为"人物卡"的文章
 	const charaArticles = articles.filter(item => item.category === '人物卡')
@@ -31,6 +54,10 @@ export default function Page() {
 	console.log('charaArticles length:', charaArticles.length)
 	console.log('filteredArticles length:', filteredArticles.length)
 	console.log('allTags:', allTags)
+
+	if (!isVerified) {
+		return <PasswordVerify category="Chara" onVerify={() => setIsVerified(true)} />
+	}
 
 	return (
 		<div className='mx-auto w-full max-w-[1920px] px-6 pt-24 pb-12'>

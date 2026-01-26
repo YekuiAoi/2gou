@@ -4,14 +4,37 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useConfigStore } from '@/app/(home)/stores/config-store'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useBlogIndex } from '@/hooks/use-blog-index'
+import { PasswordVerify } from '@/components/password-verify'
 
 export default function Page() {
 	const { siteContent } = useConfigStore()
 	const { items: articles, loading } = useBlogIndex()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [selectedTag, setSelectedTag] = useState<string>('all')
+	const [isVerified, setIsVerified] = useState(false)
+	
+	// 检查是否需要密码验证
+	useEffect(() => {
+		const needPassword = siteContent.enablePasswordAccess && 
+			siteContent.passwordAccessPassword && 
+			(siteContent.passwordAccessCategories || []).includes('Notes')
+		
+		if (needPassword) {
+			// 检查是否已经验证过，并且密码没有更改
+			const verified = localStorage.getItem('password_Notes') === 'verified'
+			const storedHash = localStorage.getItem('password_Notes_hash')
+			const currentHash = siteContent.passwordAccessPassword
+			const passwordMatch = storedHash === currentHash
+			
+			// 只有当验证过且密码匹配时才视为已验证
+			setIsVerified(verified && passwordMatch)
+		} else {
+			// 不需要密码验证
+			setIsVerified(true)
+		}
+	}, [siteContent.enablePasswordAccess, siteContent.passwordAccessCategories, siteContent.passwordAccessPassword])
 	
 	// 筛选出分类为"笔记"的文章
 	const notesArticles = articles.filter(item => item.category === '笔记')
@@ -37,6 +60,10 @@ export default function Page() {
 		if (text.length <= maxLength) return text;
 		return text.substring(0, maxLength) + '...';
 	};
+
+	if (!isVerified) {
+		return <PasswordVerify category="Notes" onVerify={() => setIsVerified(true)} />
+	}
 
 	return (
 		<div className='mx-auto w-full max-w-[1920px] px-6 pt-24 pb-12'>

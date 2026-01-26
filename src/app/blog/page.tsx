@@ -7,6 +7,7 @@ import { motion } from 'motion/react'
 
 dayjs.extend(weekOfYear)
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { PasswordVerify } from '@/components/password-verify'
 import { toast } from 'sonner'
 import { ANIMATION_DELAY, INIT_DELAY } from '@/consts'
 import ShortLineSVG from '@/svgs/short-line.svg'
@@ -42,6 +43,28 @@ export default function BlogPage() {
 	const [categoryModalOpen, setCategoryModalOpen] = useState(false)
 	const [categoryList, setCategoryList] = useState<string[]>([])
 	const [newCategory, setNewCategory] = useState('')
+	const [isVerified, setIsVerified] = useState(false)
+	
+	// 检查是否需要密码验证
+	useEffect(() => {
+		const needPassword = siteContent.enablePasswordAccess && 
+			siteContent.passwordAccessPassword && 
+			(siteContent.passwordAccessCategories || []).includes('blog')
+		
+		if (needPassword) {
+			// 检查是否已经验证过，并且密码没有更改
+			const verified = localStorage.getItem('password_blog') === 'verified'
+			const storedHash = localStorage.getItem('password_blog_hash')
+			const currentHash = siteContent.passwordAccessPassword
+			const passwordMatch = storedHash === currentHash
+			
+			// 只有当验证过且密码匹配时才视为已验证
+			setIsVerified(verified && passwordMatch)
+		} else {
+			// 不需要密码验证
+			setIsVerified(true)
+		}
+	}, [siteContent.enablePasswordAccess, siteContent.passwordAccessCategories, siteContent.passwordAccessPassword])
 
 	useEffect(() => {
 		if (!editMode) {
@@ -309,6 +332,10 @@ export default function BlogPage() {
 			window.removeEventListener('keydown', handleKeyDown)
 		}
 	}, [editMode, toggleEditMode])
+
+	if (!isVerified) {
+		return <PasswordVerify category="blog" onVerify={() => setIsVerified(true)} />
+	}
 
 	return (
 		<>

@@ -18,28 +18,69 @@ interface ConfigStore {
 	setConfigDialogOpen: (open: boolean) => void
 }
 
-export const useConfigStore = create<ConfigStore>((set, get) => ({
-	siteContent: { ...siteContent },
-	cardStyles: { ...cardStyles },
-	regenerateKey: 0,
-	configDialogOpen: false,
-	setSiteContent: (content: SiteContent) => {
-		set({ siteContent: content })
-	},
-	setCardStyles: (styles: CardStyles) => {
-		set({ cardStyles: styles })
-	},
-	resetSiteContent: () => {
-		set({ siteContent: { ...siteContent } })
-	},
-	resetCardStyles: () => {
-		set({ cardStyles: { ...cardStyles } })
-	},
-	regenerateBubbles: () => {
-		set(state => ({ regenerateKey: state.regenerateKey + 1 }))
-	},
-	setConfigDialogOpen: (open: boolean) => {
-		set({ configDialogOpen: open })
+// 从localStorage加载配置
+const loadFromLocalStorage = () => {
+	try {
+		const savedSiteContent = localStorage.getItem('siteContent')
+		const savedCardStyles = localStorage.getItem('cardStyles')
+		
+		return {
+			siteContent: savedSiteContent ? JSON.parse(savedSiteContent) : { ...siteContent },
+			cardStyles: savedCardStyles ? JSON.parse(savedCardStyles) : { ...cardStyles }
+		}
+	} catch (error) {
+		console.error('Failed to load config from localStorage:', error)
+		return {
+			siteContent: { ...siteContent },
+			cardStyles: { ...cardStyles }
+		}
 	}
-}))
+}
+
+// 保存配置到localStorage
+const saveToLocalStorage = (siteContent: SiteContent, cardStyles: CardStyles) => {
+	try {
+		localStorage.setItem('siteContent', JSON.stringify(siteContent))
+		localStorage.setItem('cardStyles', JSON.stringify(cardStyles))
+	} catch (error) {
+		console.error('Failed to save config to localStorage:', error)
+	}
+}
+
+export const useConfigStore = create<ConfigStore>((set, get) => {
+	const initialConfig = loadFromLocalStorage()
+	
+	return {
+		siteContent: initialConfig.siteContent,
+		cardStyles: initialConfig.cardStyles,
+		regenerateKey: 0,
+		configDialogOpen: false,
+		setSiteContent: (content: SiteContent) => {
+			set({ siteContent: content })
+			// 保存到localStorage
+			saveToLocalStorage(content, get().cardStyles)
+		},
+		setCardStyles: (styles: CardStyles) => {
+			set({ cardStyles: styles })
+			// 保存到localStorage
+			saveToLocalStorage(get().siteContent, styles)
+		},
+		resetSiteContent: () => {
+			set({ siteContent: { ...siteContent } })
+			// 保存到localStorage
+			saveToLocalStorage({ ...siteContent }, get().cardStyles)
+		},
+		resetCardStyles: () => {
+			set({ cardStyles: { ...cardStyles } })
+			// 保存到localStorage
+			saveToLocalStorage(get().siteContent, { ...cardStyles })
+		},
+		regenerateBubbles: () => {
+			set(state => ({ regenerateKey: state.regenerateKey + 1 }))
+		},
+		setConfigDialogOpen: (open: boolean) => {
+			set({ configDialogOpen: open })
+		}
+	}
+})
 
