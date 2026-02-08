@@ -1,8 +1,8 @@
 {
 	"meta": {
-		"title": "[贰狗日志]",
-		"description": "任贰狗的个人博客，发布一些日常收集来的软件、游戏，还有一些乱七八糟瞎折腾的研究笔记教程之类的。",
-		"username": "Ciao"
+		"title": "夜之向日葵",
+		"description": "夜葵的个人博客，记录自己的成长历程，使得未来有迹可循。可以分享一些网站/工具/软件/",
+		"username": "夜葵"
 	},
 	"theme": {
 		"colorBrand": "#35bfab",
@@ -39,27 +39,20 @@
 	"socialButtons": [
 		{
 			"id": "github",
-			"type": "github",
-			"value": "https://github.com/RT622",
-			"label": "Github",
+			"type": "bilibili",
+			"value": "https://space.bilibili.com/163700685?spm_id_from=333.1007.0.0",
+			"label": "bilibili",
 			"order": 3
-		},
-		{
-			"id": "juejin",
-			"type": "qq",
-			"value": "/images/social-buttons/7f509f0a4c020a31.png",
-			"label": "稀土掘金",
-			"order": 2
 		},
 		{
 			"id": "email",
 			"type": "email",
-			"value": "Twodog@88.com",
+			"value": "3495503224@qq.com",
 			"label": "",
 			"order": 1
 		}
 	],
-	"clockShowSeconds": false,
+	"clockShowSeconds": true,
 	"summaryInContent": false,
 	"isCachePem": true,
 	"hideEditButton": false,
@@ -67,7 +60,7 @@
 	"currentHatIndex": 3,
 	"hatFlipped": false,
 	"enableChristmas": true,
-	"enablePasswordAccess": true,
+	"enablePasswordAccess": false,
 	"passwordAccessCategories": [
 		"Chara",
 		"Games"
