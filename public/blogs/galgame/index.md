@@ -8,7 +8,7 @@
 ![](/blogs/galgame/dfff8ca2a9ff088f.jpg)
 
 
-总的来说，游戏很不错，有很多笑点和泪点，有点key社的风格。
+总的来说，游戏很不错，有很多笑点和泪点，有点key社的风格。游戏放网盘了，提取码：KSpd
 
 我录制了整个游戏：b站 BV1rNUzBAEVS
 
