@@ -64,12 +64,11 @@
 	"currentHatIndex": 3,
 	"hatFlipped": false,
 	"enableChristmas": true,
-	"enablePasswordAccess": false,
+	"enablePasswordAccess": true,
 	"passwordAccessCategories": [
-		"Chara",
-		"Games"
+		"Chara"
 	],
-	"passwordAccessPassword": "110110",
+	"passwordAccessPassword": "86400",
 	"beian": {
 		"text": "",
 		"link": "https://2025-blog-public-six-sable.vercel.app/"
